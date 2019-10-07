@@ -20,7 +20,7 @@ void populate( Trip trip[CHROMOSOMES], Trip offsprings[TOP_X] );
 bool compareTwoTrips(Trip firstTrip,Trip secondTrip);
 int getCharPosition(const char *array, size_t size, char charToFind);
 void insertCity(char charToBeInsertedAttempt1, char charToBeInsertedAttempt2, int indexInOffspring,
-		char offspringIternary[], Trip shortestTripParent);
+		char offspringIternary[], Trip parents[]);
 void compliment(char offspringIternary[], char offspringComplimentItenary[]);
 
 // need to implement for your program 1
@@ -217,9 +217,9 @@ void crossover( Trip parents[TOP_X], Trip offsprings[TOP_X], int coordinates[CIT
 		float distbtwcities_in_parent_2 = sqrt(pow((city_x_parent_2-city_x0),2) + pow((city_y_parent_2-city_y0),2));
 
 		if(distbtwcities_in_parent_1 <= distbtwcities_in_parent_2) {
-			insertCity(city_parent_1, city_parent_2, j, offsprings[i].itinerary, parents[0]);
+			insertCity(city_parent_1, city_parent_2, j, offsprings[i].itinerary, parents);
 		} else {
-			insertCity(city_parent_2, city_parent_1, j, offsprings[i].itinerary, parents[0]);
+			insertCity(city_parent_2, city_parent_1, j, offsprings[i].itinerary, parents);
 		}
 
 		for(j=1; j < CITIES; j++) {
@@ -269,9 +269,9 @@ void crossover( Trip parents[TOP_X], Trip offsprings[TOP_X], int coordinates[CIT
 		    //cout << "distbtwcities_in_parent2:  " << distbtwcities_in_parent2 << " city 3 " << city3 << " city4 " << city4 <<  endl;
 
 			 if(distbtwcities_in_parent1 <= distbtwcities_in_parent2) {
-				insertCity(city_parent_1, city4, j, offsprings[i].itinerary, parents[0]);
+				insertCity(city_parent_1, city4, j, offsprings[i].itinerary, parents);
 			} else {
-				insertCity(city4, city_parent_1, j, offsprings[i].itinerary, parents[0]);
+				insertCity(city4, city_parent_1, j, offsprings[i].itinerary, parents);
 			}
 
 			//cout << "city-2 " << city2 << endl;
@@ -282,7 +282,7 @@ void crossover( Trip parents[TOP_X], Trip offsprings[TOP_X], int coordinates[CIT
 
 
 		insertCity(parents[i].itinerary[CITIES-1], parents[i+1].itinerary[CITIES-1], CITIES-1,
-				offsprings[i].itinerary, parents[0]);
+				offsprings[i].itinerary, parents);
 
 		//cout << "off spring itinerary " << offsprings[i].itinerary << endl;
 		compliment(offsprings[i].itinerary, offsprings[i+1].itinerary);
@@ -294,7 +294,7 @@ void crossover( Trip parents[TOP_X], Trip offsprings[TOP_X], int coordinates[CIT
 }
 
 void insertCity(char charToBeInsertedAttempt1, char charToBeInsertedAttempt2, int indexInOffspring,
-		char offspringIternary[], Trip shortestTripParent) {
+		char offspringIternary[], Trip parents[]) {
 
 	if(charToBeInsertedAttempt1!= '%' && (getCharPosition(offspringIternary, CITIES, charToBeInsertedAttempt1)) < 0) {
 		offspringIternary[indexInOffspring] = charToBeInsertedAttempt1;
@@ -306,6 +306,9 @@ void insertCity(char charToBeInsertedAttempt1, char charToBeInsertedAttempt2, in
 
 		//srand (time(NULL));
 		// need to insert a random city.
+
+		int random_number_1 = rand() % TOP_X;
+
 		for(int i=0; i < CITIES; i++) {
 
 			//int random_number_1 = rand() % CITIES;
@@ -314,8 +317,8 @@ void insertCity(char charToBeInsertedAttempt1, char charToBeInsertedAttempt2, in
 
 			//cout << "shortestTripParent.itinerary " << shortestTripParent.itinerary << endl;
 
-			if((getCharPosition(offspringIternary, CITIES, city_names[i])) < 0) {
-				offspringIternary[indexInOffspring] = city_names[i];
+			if((getCharPosition(offspringIternary, CITIES, parents[random_number_1].itinerary[i])) < 0) {
+				offspringIternary[indexInOffspring] = parents[random_number_1].itinerary[i];
 				return;
 			}
 		}
